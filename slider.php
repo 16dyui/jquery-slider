@@ -39,45 +39,47 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
     <script>
+			/*jquery slider https://github.com/yui5m/jquery-slider*/
       let startx;
       let endx;
       let hisx;
       let scstart;
-      $('#wrap').bind('touchstart', function() {
-        scstart = $('#wrap').scrollLeft();
+			let wrap = $('#wrap');
+      wrap.bind('touchstart', function() {
+        scstart = wrap.scrollLeft();
         startx = event.changedTouches[0].pageX;
         hisx = [];
       });
-      $('#wrap').bind('touchmove', function(e) {
+      wrap.bind('touchmove', function(e) {
         e.preventDefault();
         endx = event.changedTouches[0].pageX;
         hisx.unshift(endx);
         if(2<hisx.length) hisx.pop();
-        $('#wrap').scrollLeft(startx - endx + scstart);
+        wrap.scrollLeft(startx - endx + scstart);
       });
-      $('#wrap').bind('touchend', function() {
+      wrap.bind('touchend', function() {
         var leftx=hisx[1]-hisx[0];
         var rightx=hisx[0]-hisx[1];
-        var scend=$('#wrap').scrollLeft();
-        if(scend<$('#wrap').width()/2) {
+        var scend=wrap.scrollLeft();
+        if(scend<wrap.width()/2) {
           if(leftx<=10 || isNaN(leftx))
-            $('#wrap').animate({scrollLeft: 0}, 'fast');
+            wrap.animate({scrollLeft: 0}, 'fast');
           if(leftx>10)
-            $('#wrap').animate({scrollLeft: $('#wrap').width()}, 3000/leftx);
+            wrap.animate({scrollLeft: wrap.width()}, 3000/leftx);
         }
-        if($('#wrap').width()/2<scend && scend<$('#wrap').width()*1.5) {
+        if(wrap.width()/2<scend && scend<wrap.width()*1.5) {
           if((rightx<=10 && leftx<=10) || isNaN(rightx) || isNaN(leftx))
-            $('#wrap').animate({scrollLeft: $('#wrap').width()}, 'fast');
+            wrap.animate({scrollLeft: wrap.width()}, 'fast');
           if(rightx>10)
-            $('#wrap').animate({scrollLeft: 0}, 3000/rightx);
+            wrap.animate({scrollLeft: 0}, 3000/rightx);
           if(leftx>10)
-            $('#wrap').animate({scrollLeft: $('#wrap').width()*2}, 3000/leftx);
+            wrap.animate({scrollLeft: wrap.width()*2}, 3000/leftx);
         }
-        if($('#wrap').width()*1.5<scend) {
+        if(wrap.width()*1.5<scend) {
           if(rightx<=10 || isNaN(rightx))
-            $('#wrap').animate({scrollLeft: $('#wrap').width()*2}, 'fast');
+            wrap.animate({scrollLeft: wrap.width()*2}, 'fast');
           if(rightx>10)
-            $('#wrap').animate({scrollLeft: $('#wrap').width()}, 3000/rightx);
+            wrap.animate({scrollLeft: wrap.width()}, 3000/rightx);
         }
       });
     </script>
