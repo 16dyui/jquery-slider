@@ -39,49 +39,43 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
     <script>
-			/*jquery slider https://github.com/yui5m/jquery-slider*/
-      let startx;
-      let endx;
-      let hisx;
-      let scstart;
-			let wrap = $('#wrap');
-      wrap.bind('touchstart', function() {
-        scstart = wrap.scrollLeft();
-        startx = event.changedTouches[0].pageX;
-        hisx = [];
-      });
-      wrap.bind('touchmove', function(e) {
-        e.preventDefault();
-        endx = event.changedTouches[0].pageX;
-        hisx.unshift(endx);
-        if(2<hisx.length) hisx.pop();
-        wrap.scrollLeft(startx - endx + scstart);
-      });
-      wrap.bind('touchend', function() {
-        var leftx=hisx[1]-hisx[0];
-        var rightx=hisx[0]-hisx[1];
-        var scend=wrap.scrollLeft();
-        if(scend<wrap.width()/2) {
-          if(leftx<=10 || isNaN(leftx))
-            wrap.animate({scrollLeft: 0}, 'fast');
-          if(leftx>10)
-            wrap.animate({scrollLeft: wrap.width()}, 3000/leftx);
-        }
-        if(wrap.width()/2<scend && scend<wrap.width()*1.5) {
-          if((rightx<=10 && leftx<=10) || isNaN(rightx) || isNaN(leftx))
-            wrap.animate({scrollLeft: wrap.width()}, 'fast');
-          if(rightx>10)
-            wrap.animate({scrollLeft: 0}, 3000/rightx);
-          if(leftx>10)
-            wrap.animate({scrollLeft: wrap.width()*2}, 3000/leftx);
-        }
-        if(wrap.width()*1.5<scend) {
-          if(rightx<=10 || isNaN(rightx))
-            wrap.animate({scrollLeft: wrap.width()*2}, 'fast');
-          if(rightx>10)
-            wrap.animate({scrollLeft: wrap.width()}, 3000/rightx);
-        }
-      });
+	/*jquery slider https://github.com/yui5m/jquery-slider*/
+	let startx;
+	let endx;
+	let hisx;
+	let scstart;
+	$('#wrap').each(function() {
+		let wrap = $(this);
+		wrap.bind('touchstart', function() {
+			scstart = wrap.scrollLeft();
+			startx = event.changedTouches[0].pageX;
+			hisx = [];
+		});
+		wrap.bind('touchmove', function() {
+			event.preventDefault();
+			endx = event.changedTouches[0].pageX;
+			hisx.unshift(endx);
+			if(2<hisx.length) hisx.pop();
+			wrap.scrollLeft(startx - endx + scstart);
+		});
+		wrap.bind('touchend', function() {
+			var leftx=hisx[1]-hisx[0];
+			var rightx=hisx[0]-hisx[1];
+			var scend=wrap.scrollLeft();
+			$(wrap.children('img').get().reverse()).each(function() {
+				if($(this).position().left<0) {
+					if(-$(this).position().left<$(this).width()/2) {
+						wrap.animate({scrollLeft: scend+$(this).position().left}, 'fast');
+						console.log('back');
+					} else {
+						wrap.animate({scrollLeft: scend+$(this).next().position().left}, 'fast');
+						console.log('next');
+					}
+					return false;
+				}
+			});
+		});
+	});
     </script>
   </body>
 </html>
