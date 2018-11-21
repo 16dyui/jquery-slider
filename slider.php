@@ -18,7 +18,7 @@
     	#wrap>div{
       		height: 100%;
 		display: inline-block;
-		width: 50%;
+		width: 100%;
 	}
     </style>
 	</head>
