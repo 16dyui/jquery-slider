@@ -4,33 +4,22 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=n">
 		<title>Nightly site</title>
     <style>
-      html{
-        height: 100%;
-      }
-      #wrap{
-        overflow: scroll;
-        position: relative;
-        height: 100%;
-      }
-      #wrap::-webkit-scrollbar{
-        display: none;
-      }
-      #wrap>div{
-        height: 100%;
-        width: 100%;
-        position: absolute;
-        background: red;
-      }
-      #wrap>div:nth-child(2) {
-        top: 0;
-        left: 200%;
-        background: green;
-      }
-      #wrap>div:last-child{
-        top: 0;
-        left: 100%;
-        background: blue;
-      }
+	html{
+		height: 100%;
+	}
+	#wrap{
+		overflow: scroll;
+      		height: 100%;
+		white-space: nowrap;
+    	}
+	#wrap::-webkit-scrollbar{
+      		display: none;
+    	}
+    	#wrap>div{
+      		height: 100%;
+		display: inline-block;
+		width: 50%;
+	}
     </style>
 	</head>
   <body>
