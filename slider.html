@@ -3,7 +3,8 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=n">
-		<title>Nightly site</title>
+		<title>Slider site</title>
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 		<style>
 			html {
 				height: 100%;
@@ -13,29 +14,80 @@
 				overflow: scroll;
 				height: 100%;
 				white-space: nowrap;
+				position: relative;
 			}
-
 			#wrap::-webkit-scrollbar {
 				display: none;
 			}
-
-			#wrap>div {
-				height: 100%;
-				display: inline-block;
+			#wrap * {
+				display: inline-table;
 				width: 100%;
+			}
+			#pre {
+				position: relative;
+			}
+			#pre > i {
+				position: absolute;
+				left: 0;
+				top: calc(50% - 40px);
+				font-size: 80px;
+				cursor: pointer;
+				color: white;
+				z-index: 100;
+			}
+			#pre > i:hover {
+				background: rgba(0, 0, 0, 0.5);
+			}
+			#pre > i:last-of-type {
+				right: 0;
+				left: auto;
 			}
 		</style>
 	</head>
 
 	<body>
-		<div id="wrap">
-			<div></div>
-			<div></div>
-			<div></div>
+		<div id="pre">
+			<i class="material-icons">chevron_left</i>
+			<div id="wrap">
+				<a href=""><img src="{{ app.config.front_urlpath }}/img/top/mv01.jpg"></a>
+				<a href=""><img src="{{ app.config.front_urlpath }}/img/top/mv02.jpg"></a>
+				<a href=""><img src="{{ app.config.front_urlpath }}/img/top/mv03.jpg"></a>
+			</div>
+			<i class="material-icons">chevron_right</i>
 		</div>
 		<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
 		<script>
 			/*jquery slider https://github.com/yui5m/jquery-slider*/
+			next = function(now, speed = 'fast') {
+				sc = $('#wrap');
+				sc.animate({
+					scrollLeft: sc.scrollLeft() + now
+				}, speed);
+			}
+			prev = function(now, speed = 'fast') {
+				sc = $('#wrap');
+				sc.animate({
+					scrollLeft: sc.scrollLeft() + now
+				}, speed);
+			}
+			$('#pre>i:last-of-type').on('click', function() {
+				event.preventDefault();
+				$('#wrap').children().each(function() {
+					if (10 < $(this).position().left) {
+						next($(this).position().left);
+						return false;
+					}
+				});
+			});
+			$('#pre>i:first-of-type').on('click', function() {
+				event.preventDefault();
+				$($('#wrap').children().get().reverse()).each(function() {
+					if (-10 > $(this).position().left) {
+						prev($(this).position().left);
+						return false;
+					}
+				});
+			});
 			let startx;
 			let endx;
 			let hisx;
@@ -51,7 +103,8 @@
 					event.preventDefault();
 					endx = event.changedTouches[0].pageX;
 					hisx.unshift(endx);
-					if (2 < hisx.length) hisx.pop();
+					if (2 < hisx.length) 
+						hisx.pop();
 					wrap.scrollLeft(startx - endx + scstart);
 				});
 				wrap.bind('touchend', function() {
