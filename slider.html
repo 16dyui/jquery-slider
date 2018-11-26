@@ -57,76 +57,77 @@
 		</div>
 		<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
 		<script>
-			/*jquery slider https://github.com/yui5m/jquery-slider*/
-			next = function(now, speed = 'fast') {
-				sc = $('#wrap');
-				sc.animate({
-					scrollLeft: sc.scrollLeft() + now
-				}, speed);
-			}
-			prev = function(now, speed = 'fast') {
-				sc = $('#wrap');
-				sc.animate({
-					scrollLeft: sc.scrollLeft() + now
-				}, speed);
-			}
-			$('#pre>i:last-of-type').on('click', function() {
+/*jquery slider https://github.com/yui5m/jquery-slider*/
+		next = function(speed = 'fast') {
+			sc = $('#wrap');
+			$('#wrap').children().each(function() {
+				if (10 < $(this).position().left) {
+					sc.animate({
+						scrollLeft: sc.scrollLeft() + $(this).position().left
+					}, speed);
+					return false;
+				}
+			});
+		}
+		prev = function(speed = 'fast') {
+			sc = $('#wrap');
+			$($('#wrap').children().get().reverse()).each(function() {
+				if (-10 > $(this).position().left) {
+					sc.animate({
+						scrollLeft: sc.scrollLeft() + $(this).position().left
+					}, speed);
+					return false;
+				}
+			});
+		}
+		$('#pre>i:last-of-type').on('click', function() {
+			event.preventDefault();
+			next();
+		});
+		$('#pre>i:first-of-type').on('click', function() {
+			event.preventDefault();
+			prev();
+		});
+		let startx;
+		let endx;
+		let hisx;
+		let scstart;
+		$('#wrap').each(function() {
+			let wrap = $(this);
+			wrap.bind('touchstart', function() {
+				scstart = wrap.scrollLeft();
+				startx = event.changedTouches[0].pageX;
+				hisx = [];
+			});
+			wrap.bind('touchmove', function() {
 				event.preventDefault();
-				$('#wrap').children().each(function() {
-					if (10 < $(this).position().left) {
-						next($(this).position().left);
-						return false;
+				endx = event.changedTouches[0].pageX;
+				hisx.unshift(endx);
+				if (2 < hisx.length) 
+					hisx.pop();
+				wrap.scrollLeft(startx - endx + scstart);
+			});
+			wrap.bind('touchend', function() {
+				var leftx = hisx[1] - hisx[0];
+				var rightx = hisx[0] - hisx[1];
+				var scend = wrap.scrollLeft();
+				var conhalf = $(this).width() / 2;
+				if (0 < endx - startx) {
+					if (conhalf < endx - startx) {
+						prev();
+					} else {
+						next();
 					}
-				});
-			});
-			$('#pre>i:first-of-type').on('click', function() {
-				event.preventDefault();
-				$($('#wrap').children().get().reverse()).each(function() {
-					if (-10 > $(this).position().left) {
-						prev($(this).position().left);
-						return false;
+				}
+				if (0 < startx - endx) {
+					if (conhalf < startx - endx) {
+						next();
+					} else {
+						prev();
 					}
-				});
+				}
 			});
-			let startx;
-			let endx;
-			let hisx;
-			let scstart;
-			$('#wrap').each(function() {
-				let wrap = $(this);
-				wrap.bind('touchstart', function() {
-					scstart = wrap.scrollLeft();
-					startx = event.changedTouches[0].pageX;
-					hisx = [];
-				});
-				wrap.bind('touchmove', function() {
-					event.preventDefault();
-					endx = event.changedTouches[0].pageX;
-					hisx.unshift(endx);
-					if (2 < hisx.length) 
-						hisx.pop();
-					wrap.scrollLeft(startx - endx + scstart);
-				});
-				wrap.bind('touchend', function() {
-					var leftx = hisx[1] - hisx[0];
-					var rightx = hisx[0] - hisx[1];
-					var scend = wrap.scrollLeft();
-					$(wrap.children().get().reverse()).each(function() {
-						if ($(this).position().left < 0) {
-							if (-$(this).position().left < $(this).width() / 2) {
-								wrap.animate({
-									scrollLeft: scend + $(this).position().left - 20
-								}, 'fast');
-							} else {
-								wrap.animate({
-									scrollLeft: scend + $(this).next().position().left - 20
-								}, 'fast');
-							}
-							return false;
-						}
-					});
-				});
-			});
+		});
 		</script>
 	</body>
 
