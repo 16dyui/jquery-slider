@@ -9,36 +9,35 @@
 			html {
 				height: 100%;
 			}
-
-			#wrap {
+			.wrap {
 				overflow: scroll;
+				position: relative;
 				height: 100%;
 				white-space: nowrap;
-				position: relative;
 			}
-			#wrap::-webkit-scrollbar {
+			.wrap::-webkit-scrollbar {
 				display: none;
 			}
-			#wrap * {
+			.wrap * {
 				display: inline-table;
 				width: 100%;
 			}
-			#pre {
+			.pre {
 				position: relative;
 			}
-			#pre > i {
+			.pre > i {
 				position: absolute;
-				left: 0;
+				z-index: 100;
 				top: calc(50% - 40px);
+				left: 0;
+				color: white;
 				font-size: 80px;
 				cursor: pointer;
-				color: white;
-				z-index: 100;
 			}
-			#pre > i:hover {
-				background: rgba(0, 0, 0, 0.5);
+			.pre > i:hover {
+				background: rgba(0, 0, 0, .5);
 			}
-			#pre > i:last-of-type {
+			.pre > i:last-of-type {
 				right: 0;
 				left: auto;
 			}
@@ -57,77 +56,83 @@
 		</div>
 		<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
 		<script>
-/*jquery slider https://github.com/yui5m/jquery-slider*/
-		next = function(speed = 'fast') {
-			sc = $('#wrap');
-			$('#wrap').children().each(function() {
-				if (10 < $(this).position().left) {
-					sc.animate({
-						scrollLeft: sc.scrollLeft() + $(this).position().left
-					}, speed);
-					return false;
-				}
-			});
-		}
-		prev = function(speed = 'fast') {
-			sc = $('#wrap');
-			$($('#wrap').children().get().reverse()).each(function() {
-				if (-10 > $(this).position().left) {
-					sc.animate({
-						scrollLeft: sc.scrollLeft() + $(this).position().left
-					}, speed);
-					return false;
-				}
-			});
-		}
-		$('#pre>i:last-of-type').on('click', function() {
-			event.preventDefault();
-			next();
-		});
-		$('#pre>i:first-of-type').on('click', function() {
-			event.preventDefault();
-			prev();
-		});
-		let startx;
-		let endx;
-		let hisx;
-		let scstart;
-		$('#wrap').each(function() {
-			let wrap = $(this);
-			wrap.bind('touchstart', function() {
-				scstart = wrap.scrollLeft();
-				startx = event.changedTouches[0].pageX;
-				hisx = [];
-			});
-			wrap.bind('touchmove', function() {
+			/*jquery slider https://github.com/yui5m/jquery-slider*/
+			next = function(wrap, speed = 'fast') {
+				wrap.children().each(function() {
+					if (10 < $(this).position().left) {
+						wrap.animate({
+							scrollLeft: wrap.scrollLeft() + $(this).position().left
+						}, speed);
+						return false;
+					}
+				});
+			}
+			prev = function(wrap, speed = 'fast') {
+				$(wrap.children().get().reverse()).each(function() {
+					if (-10 > $(this).position().left) {
+						wrap.animate({
+							scrollLeft: wrap.scrollLeft() + $(this).position().left
+						}, speed);
+						return false;
+					}
+				});
+			}
+			$('.pre>i:last-of-type').on('click', function() {
 				event.preventDefault();
-				endx = event.changedTouches[0].pageX;
-				hisx.unshift(endx);
-				if (2 < hisx.length) 
-					hisx.pop();
-				wrap.scrollLeft(startx - endx + scstart);
+				next($(this).prev());
 			});
-			wrap.bind('touchend', function() {
-				var leftx = hisx[1] - hisx[0];
-				var rightx = hisx[0] - hisx[1];
-				var scend = wrap.scrollLeft();
-				var conhalf = $(this).width() / 2;
-				if (0 < endx - startx) {
-					if (conhalf < endx - startx) {
-						prev();
-					} else {
-						next();
-					}
-				}
-				if (0 < startx - endx) {
-					if (conhalf < startx - endx) {
-						next();
-					} else {
-						prev();
-					}
-				}
+			$('.pre>i:first-of-type').on('click', function() {
+				event.preventDefault();
+				prev($(this).next());
 			});
-		});
+			let startx;
+			let endx;
+			let hisx;
+			let scstart;
+			$('.wrap').each(function() {
+				let wrap = $(this);
+				wrap.bind('touchstart', function() {
+					scstart = wrap.scrollLeft();
+					startx = event.changedTouches[0].pageX;
+					hisx = [];
+				});
+				wrap.bind('touchmove', function() {
+					event.preventDefault();
+					endx = event.changedTouches[0].pageX;
+					hisx.unshift(endx);
+					if (2 < hisx.length) 
+						hisx.pop();
+					wrap.scrollLeft(startx - endx + scstart);
+				});
+				wrap.bind('touchend', function() {
+					var leftx = hisx[1] - hisx[0];
+					var rightx = hisx[0] - hisx[1];
+					var scend = wrap.scrollLeft();
+					var conhalf = $(this).width() / 2;
+					if (0 < endx - startx) {
+						if (conhalf < endx - startx) {
+							prev(wrap);
+						} else {
+							if (20 < rightx) {
+								prev(wrap, rightx * 3);
+							} else {
+								next(wrap);
+							}
+						}
+					}
+					if (0 < startx - endx) {
+						if (conhalf < startx - endx) {
+							next(wrap);
+						} else {
+							if (20 < leftx) {
+								next(wrap, leftx * 3);
+							} else {
+								prev(wrap);
+							}
+						}
+					}
+				});
+			});
 		</script>
 	</body>
 
