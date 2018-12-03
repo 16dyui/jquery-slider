@@ -6,53 +6,45 @@
 		<title>Slider site</title>
 		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 		<style>
-			html {
-				height: 100%;
+			.nate{
+				position:absolute;
+				bottom:10px;
+				left:0;
+				width:100%;
+				text-align:center;
 			}
-			.wrap {
-				overflow: scroll;
-				position: relative;
-				height: 100%;
-				white-space: nowrap;
+			.nate>i{
+				display:inline-table;
+				width:10px;
+				height:10px;
+				border-radius:50%;
+				background:white;
+				cursor:pointer;
 			}
-			.wrap::-webkit-scrollbar {
-				display: none;
+			.nate>i.now{
+				background:black;
+				pointer-events:none;
 			}
-			.wrap * {
-				display: inline-table;
-				width: 100%;
-			}
-			.pre {
-				position: relative;
-			}
-			.pre > i {
-				position: absolute;
-				z-index: 100;
-				top: calc(50% - 40px);
-				left: 0;
-				color: white;
-				font-size: 80px;
-				cursor: pointer;
-			}
-			.pre > i:hover {
-				background: rgba(0, 0, 0, .5);
-			}
-			.pre > i:last-of-type {
-				right: 0;
-				left: auto;
+			.nate>i~i{
+				margin:0 0 0 10px;
 			}
 		</style>
 	</head>
 
 	<body>
-		<div id="pre">
+		<div class="pre">
 			<i class="material-icons">chevron_left</i>
-			<div id="wrap">
+			<div class="wrap">
 				<a href=""><img src="{{ app.config.front_urlpath }}/img/top/mv01.jpg"></a>
 				<a href=""><img src="{{ app.config.front_urlpath }}/img/top/mv02.jpg"></a>
 				<a href=""><img src="{{ app.config.front_urlpath }}/img/top/mv03.jpg"></a>
 			</div>
 			<i class="material-icons">chevron_right</i>
+			<div class="nate">
+				<i class="now"></i>
+				<i></i>
+				<i></i>
+			</div>
 		</div>
 		<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
 		<script>
@@ -85,12 +77,22 @@
 				event.preventDefault();
 				prev($(this).next());
 			});
+			$('.nate>i').on('click', function() {
+				$(this).closest('.pre').find('.wrap').animate({
+					scrollLeft: $(this).closest('.pre').find('.wrap').scrollLeft() + $(this).closest('.pre').find('.wrap>*').eq($(this).index()).position().left
+				}, 'fast');
+			});
 			let startx;
 			let endx;
 			let hisx;
 			let scstart;
 			$('.wrap').each(function() {
 				let wrap = $(this);
+				wrap.on('scroll', function() {
+					console.log();
+					wrap.closest('.pre').find('.nate>i').removeClass('now');
+					wrap.closest('.pre').find('.nate>i').eq(Math.floor(wrap.scrollLeft() / (wrap.width()))).addClass('now');
+				});
 				wrap.bind('touchstart', function() {
 					scstart = wrap.scrollLeft();
 					startx = event.changedTouches[0].pageX;
@@ -100,7 +102,7 @@
 					event.preventDefault();
 					endx = event.changedTouches[0].pageX;
 					hisx.unshift(endx);
-					if (2 < hisx.length) 
+					if (2 < hisx.length)
 						hisx.pop();
 					wrap.scrollLeft(startx - endx + scstart);
 				});
