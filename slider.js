@@ -73,14 +73,19 @@ $('.wrap').each(function(i, o) {
 		hisx = [];
 	});
 	wrap.bind('touchmove', function() {
-		if(event.changedTouches[0].pageY - starty !== 0)
-			return true;
-		event.preventDefault();
-		endx = event.changedTouches[0].pageX;
-		hisx.unshift(endx);
-		if (2 < hisx.length)
-			hisx.pop();
-		wrap.scrollLeft(startx - endx + scstart);
+		if(hisx.length===0) {
+			if(event.changedTouches[0].pageY - starty < -10 | 10 < event.changedTouches[0].pageY - starty) {
+				starty = false;
+			}
+		}
+		if(starty) {
+			event.preventDefault();
+			endx = event.changedTouches[0].pageX;
+			hisx.unshift(endx);
+			if (2 < hisx.length)
+				hisx.pop();
+			wrap.scrollLeft(startx - endx + scstart);
+		}
 	});
 	wrap.bind('touchend', function() {
 		var leftx = hisx[1] - hisx[0];
