@@ -45,22 +45,23 @@ $('.nate>i').on('click', function() {
 	}, 'fast');
 });
 //タッチ操作関連
-let startx;
-let endx;
-let hisx;
-let scstart;
-let time = 2000;
+let startx;//タッチx軸
+let starty;//タッチy軸
+let endx;//タッチ終了位置
+let hisx;//タッチ移動履歴
+let scstart;//スクロール初期位置
+let time = 4000;//自動スクロール間隔調整
 $('.wrap').each(function(i, o) {
 	let wrap = $(this);
 	//自動スライド関連
 	let timeout;
 	timeout = setTimeout(function() {
-		next(wrap)
+		next(wrap, 'slow')
 	}, time);
 	wrap.on('scroll', function() {
 		clearTimeout(timeout);
 		timeout = setTimeout(function() {
-			next(wrap)
+			next(wrap, 'slow')
 		}, time);
 		wrap.closest('.pre').find('.nate>i').removeClass('now');
 		wrap.closest('.pre').find('.nate>i').eq(Math.floor(wrap.scrollLeft() / (wrap.width()))).addClass('now');
@@ -68,9 +69,12 @@ $('.wrap').each(function(i, o) {
 	wrap.bind('touchstart', function() {
 		scstart = wrap.scrollLeft();
 		startx = event.changedTouches[0].pageX;
+		starty = event.changedTouches[0].pageY;
 		hisx = [];
 	});
 	wrap.bind('touchmove', function() {
+		if(event.changedTouches[0].pageY - starty !== 0)
+			return true;
 		event.preventDefault();
 		endx = event.changedTouches[0].pageX;
 		hisx.unshift(endx);
