@@ -7,9 +7,10 @@
 .wrap::-webkit-scrollbar{
 	display:none;
 }
-.wrap *{
+.wrap>*{
 	display:inline-table;
 	width:100%;
+	margin:0;
 }
 .pre{
 	position:relative;
