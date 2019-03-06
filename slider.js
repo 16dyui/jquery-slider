@@ -96,8 +96,8 @@ $('.wrap').each(function(i, o) {
 			if (conhalf < endx - startx) {
 				prev(wrap);
 			} else {
-				if (20 < rightx) {
-					prev(wrap, rightx * 3);
+				if (10 < rightx) {
+					prev(wrap, 5000 / rightx);
 				} else {
 					next(wrap);
 				}
@@ -107,8 +107,8 @@ $('.wrap').each(function(i, o) {
 			if (conhalf < startx - endx) {
 				next(wrap);
 			} else {
-				if (20 < leftx) {
-					next(wrap, leftx * 3);
+				if (10 < leftx) {
+					next(wrap,5000 /  leftx);
 				} else {
 					prev(wrap);
 				}
